@@ -52,40 +52,50 @@ router.get('/search', async(req,res) => {
 
 router.get('/', async(req,res) => {
     try{
-        const resultsPerPage = 5; //a
-        const numOfResults =50;
-        const { page=1, limit=5} = req.query; //a
-        //console.log(page)
+
+        // const resultsPerPage = 5; //a
+        // const numOfResults =50;
+        // const { page=1, limit=5} = req.query; //a
+        // //console.log(page)
         
-        //res.render("dashboard", { title: "Dashboard", users: data })
-        //a
-        const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
-        //console.log(page,numberOfPages)
-        if(page > numberOfPages){
-            res.redirect('/?page='+encodeURIComponent(numberOfPages));
-        }else if(page < 1){
-            page=1
-            res.redirect('/?page='+encodeURIComponent('1'));
-        }
-        
-        let iterator = (page - 5) < 1 ? 1 : page - 5;
-        //console.log(iterator)
-        let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
-        //console.log(endingLink,iterator,numberOfPages,page)
-        // if(endingLink < (page + 4)){
-        //     iterator -= (page + 4) - numberOfPages;
+        // //res.render("dashboard", { title: "Dashboard", users: data })
+        // //a
+        // const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
+        // //console.log(page,numberOfPages)
+        // if(page > numberOfPages){
+        //     res.redirect('/?page='+encodeURIComponent(numberOfPages));
+        // }else if(page < 1){
+        //     page=1
+        //     res.redirect('/?page='+encodeURIComponent('1'));
         // }
-        //console.log(endingLink,iterator,numberOfPages,page)
-        const data = await YoutubeDataModel.find().sort({"publishedAt": -1})
-            .limit(limit)
-            .skip((page-1)*limit);
-        //res.send(data).redirect("index")
-        res.render("dashboard", { title: "Dashboard", users: data , page: page, iterator: iterator, endingLink: endingLink, numberOfPages: numberOfPages})
+        
+        // let iterator = (page - 5) < 1 ? 1 : page - 5;
+        // //console.log(iterator)
+        // let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
+        // //console.log(endingLink,iterator,numberOfPages,page)
+        // // if(endingLink < (page + 4)){
+        // //     iterator -= (page + 4) - numberOfPages;
+        // // }
+        // //console.log(endingLink,iterator,numberOfPages,page)
+        // const data = await YoutubeDataModel.find().sort({"publishedAt": -1})
+        //     .limit(limit)
+        //     .skip((page-1)*limit);
+        // //res.send(data).redirect("index")
+        //,{ title: "Dashboard", users: data , page: page, iterator: iterator, endingLink: endingLink, numberOfPages: numberOfPages}
+        res.render("home")
 //a
     }catch (err) {
         console.log(err)
     }
 })
+
+router.post('/', async(req,res) => {
+    try{
+        console.log(req.body)
+    }catch (err) {
+        console.log(err)
+    }
+});
 
 
 
