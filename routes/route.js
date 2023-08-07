@@ -1,102 +1,122 @@
 const router= require('express').Router();
+const { Auth } = require('../middlewares/auth');
+const User = require('../models/User');
+const jwt = require("jsonwebtoken");
 //const controller = require('../controllers/controller'); 
-const YoutubeDataModel = require('../models/YoutubeData');
 
-
-router.get('/api', async(req,res) => {
-    try{
-        const resultsPerPage = 5; //a
-        const numOfResults =50;
-        const { page=1, limit=5} = req.query; //a
-        const data = await YoutubeDataModel.find().sort({"publishedAt": -1})
-            .limit(limit)
-            .skip((page-1)*limit);
-        //res.render("dashboard", { title: "Dashboard", users: data })
-        //a
-        const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
-        if(page > numberOfPages){
-            res.redirect('/?page='+encodeURIComponent(numberOfPages));
-        }else if(page < 1){
-            res.redirect('/?page='+encodeURIComponent('1'));
-        }
-
-        let iterator = (page - 5) < 1 ? 1 : page - 5;
-        let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
-        if(endingLink < (page + 4)){
-            iterator -= (page + 4) - numberOfPages;
-        }
-        res.send({page, limit, data: data})
-//a
-    }catch (err) {
-        console.log(err)
-    }
-})
-
-router.get('/search', async(req,res) => {
-    try {
-        const title = req.query.videoTitle
-        const description = req.query.videoDescription
-        if(!title) {
-            const data = await YoutubeDataModel.find({videoDescription: description}).lean()
-            res.send(data)
-        }
-        if(!description) { 
-            const data = await YoutubeDataModel.find({videoTitle: title}).lean()
-            res.send(data)
-        }
-
-    }catch(err) {
-        console.log(err)
-    }
-})
-
-router.get('/', async(req,res) => {
-    try{
-
-        // const resultsPerPage = 5; //a
-        // const numOfResults =50;
-        // const { page=1, limit=5} = req.query; //a
-        // //console.log(page)
-        
-        // //res.render("dashboard", { title: "Dashboard", users: data })
-        // //a
-        // const numberOfPages = Math.ceil(numOfResults / resultsPerPage);
-        // //console.log(page,numberOfPages)
-        // if(page > numberOfPages){
-        //     res.redirect('/?page='+encodeURIComponent(numberOfPages));
-        // }else if(page < 1){
-        //     page=1
-        //     res.redirect('/?page='+encodeURIComponent('1'));
-        // }
-        
-        // let iterator = (page - 5) < 1 ? 1 : page - 5;
-        // //console.log(iterator)
-        // let endingLink = (iterator + 9) <= numberOfPages ? (iterator + 9) : page + (numberOfPages - page);
-        // //console.log(endingLink,iterator,numberOfPages,page)
-        // // if(endingLink < (page + 4)){
-        // //     iterator -= (page + 4) - numberOfPages;
-        // // }
-        // //console.log(endingLink,iterator,numberOfPages,page)
-        // const data = await YoutubeDataModel.find().sort({"publishedAt": -1})
-        //     .limit(limit)
-        //     .skip((page-1)*limit);
-        // //res.send(data).redirect("index")
-        //,{ title: "Dashboard", users: data , page: page, iterator: iterator, endingLink: endingLink, numberOfPages: numberOfPages}
-        res.render("home")
-//a
-    }catch (err) {
-        console.log(err)
-    }
-})
-
-router.post('/', async(req,res) => {
+router.get('/', Auth(), async(req,res) => {
     try{
         console.log(req.body)
+        res.render("index",{ title: "Index"})
     }catch (err) {
         console.log(err)
     }
 });
 
+router.get('/login', async(req,res) => {
+    try{
+        console.log(req.body)
+        res.render("login",{ title: "Login"})
+    }catch (err) {
+        console.log(err)
+    }
+});
 
+router.post('/login', async(req,res) => {
+    try{
+        console.log(req.body)
+        const user = await User.findOne({email: req.body.email})
+        if(!user) res.render("error", { title: "error", message: "User not Found Signup first"})
+        const userToken = jwt.sign(
+            {
+              user: {
+                id: user._id,
+              },
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: process.env.JWT_EXPIRY,
+            }
+          );
+          console.log(userToken);
+          res.cookie('userToken', userToken, {
+            maxAge: 8640000,
+            httpOnly: true,
+          })
+        if(user.isAdmin) res.render("dashboard",{ title: "Dashboard", user: user.name})
+        res.render("index", { title: "Home"})
+    }catch (err) {
+        console.log(err)
+    }
+});
+
+router.get('/signup', async(req,res) => {
+    try{
+        console.log(req.body)
+        res.render("signup",{ title: "SignUp"})
+    }catch (err) {
+        console.log(err)
+    }
+});
+
+router.post('/signup', async(req,res) => {
+        try{
+            console.log(req.body)
+            const user = await User.findOne({email: req.body.email})
+            if(user) res.render("error", { title: "error", message: "User already exist. Login Please"})
+            const newUser = { ...req.body }
+            const nUser = await User(newUser);
+            console.log(nUser)
+            await nUser.save();
+            const userToken = jwt.sign(
+                {
+                  user: {
+                    id: nUser._id,
+                  },
+                },
+                process.env.JWT_SECRET,
+                {
+                  expiresIn: process.env.JWT_EXPIRY,
+                }
+              );
+            //   const refToken = jwt.sign(
+            //     {
+            //       user: {
+            //         id: user._id,
+            //       },
+            //     },
+            //     process.env.REFRESH_JWT_SECRET,
+            //     {
+            //       expiresIn: process.env.REFRESH_JWT_EXPIRY,
+            //     }
+            //   );
+              console.log(userToken);
+              res.cookie('userToken', userToken, {
+                maxAge: 8640000,
+                httpOnly: true,
+              })
+            //if(user.isAdmin) res.render("dashboard",{ title: "Dashboard"})
+            res.render("index", { title: "Home"})
+        }catch (err) {
+            console.log(err)
+        }
+});
+
+router.get('/attendance', Auth(), async(req,res) => {
+    try{
+         res.render("attendance",{ title: "SignUp"})
+    }catch (err) {
+        console.log(err)
+    }
+})
+
+router.post('/attendance', Auth(), async(req,res) => {
+    try{
+        console.log(req.body)
+        res.render("attendance",{ title: "SignUp"})
+    }catch (err) {
+        console.log(err)
+    }
+});
 
 module.exports = router;

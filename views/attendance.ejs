@@ -1,0 +1,11 @@
+
+<%- include ('./layout.ejs') %>
+
+    <form method="POST" >
+        <label for="name"> Student Name: <input type="text" name="studentName" required/></label>
+        <label for="present">Present<input id="present" name="isPresent" type="radio"></label>
+        <label for="absent">Absent<input id="present" name="isAbsent" type="radio"></label>
+        <input type="submit">
+    </form>
+
+<%- include ('./footer.ejs') %>

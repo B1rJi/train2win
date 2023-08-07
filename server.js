@@ -2,7 +2,7 @@ const express = require('express')
 const app = express();
 
 const mongoose = require('mongoose');
-const YoutubeDataModel = require('./models/YoutubeData');
+const UserDataModel = require('./models/User');
 
 require('dotenv').config();
 
