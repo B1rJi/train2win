@@ -4,7 +4,7 @@ const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 //const controller = require('../controllers/controller'); 
 
-router.get('/', Auth(), async(req,res) => {
+router.get('/', async(req,res) => {
     try{
         console.log(req.body)
         res.render("index",{ title: "Index"})
