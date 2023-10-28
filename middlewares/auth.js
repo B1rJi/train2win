@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const Coach = require("../models/Coach");
+const Player = require("../models/Player");
 
 
 const Auth = (isAdmin = false) => {
@@ -21,7 +22,9 @@ const Auth = (isAdmin = false) => {
             if (!decoded)
                 res.render("error", { title: "error" ,message: "Cookie Not Found"})
 
-            const user = await User.findById(decoded.user.id) 
+                const coach = await Coach.findById(decoded.user.id)
+                const player = await Player.findById(decoded.user.id)
+                let user = coach ? coach : player 
             if (!user)
                 res.render("error", { title: "error" ,message: "User Not Found"})
             req.body.user = user;

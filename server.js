@@ -2,7 +2,6 @@ const express = require('express')
 const app = express();
 
 const mongoose = require('mongoose');
-const UserDataModel = require('./models/User');
 
 require('dotenv').config();
 
