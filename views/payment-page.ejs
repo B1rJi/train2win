@@ -1,0 +1,27 @@
+<%- include ('./layout.ejs') %>
+
+    <div class="app">
+        <div class="home">
+            <div class="intro-header">
+                <h2>Pay your fees online, <%- user %></h2>
+                <h3>Paying fees for month: <%= month %></h3>
+                <form action="payment" method="post">
+                    <input type="hidden" name="amount" value="<%= parseInt(amount)*100 %>">
+                    <input type="hidden" name="fees" value="Payment of <%= user %> fees for month: <%= month %>">
+                    <script
+                        src="//checkout.stripe.com/v2/checkout.js"
+                        class="stripe-button"
+                        data-key="<%= key %>"
+                        data-amount = "<%= parseInt(amount)*100 %>"
+                        data-currency = "inr"
+                        data-name="Fees"
+                        data-description="Payment of <%= user %> fees for month: <%= month %>"
+                        data-locale="auto">
+
+                    </script>
+                </form>
+            </div>
+        </div>                      
+                            
+<%- include ('./footer.ejs') %>        
+                    

@@ -1,31 +1,52 @@
 
 <%- include ('./layout.ejs') %>
-  <section class="gallery">
-    
-  </section>
-  
-  <div class="app">
-    <div class="home">
-        <div class="intro-header">
-            <h2>Hello! Welcome to Train2Win App</h2>
-        </div>
-        <div>
-            <a href="/signup">Signup</a>
-            <a href="/login">Login</a>
-        </div>
-    </div>
-</div>
-  
-  <section class="map">
 
-  </section>
-  <section class="achievements">
-    <h2>Achievements</h2>
+  <% if (home) { %>
+    <div class="app">
+      <div class="home">
+          <div class="intro-header">
+              <h2>Hello! Welcome to Train2Win App</h2>
+          </div>
+          
+          <div>
+            <a href="/signup-player">Signup As a Player</a>
+            <a href="/signup-coach">Signup As a Coach</a>
+            <a href="/login">Login</a>
+          </div>
+        </div>
+      </div>
+      <section class="gallery">
     
-  </section>
-  <section class="testimonials">
-    <h2>Testimonials</h2>
-    
-  </section>
-  
-  <%- include ('./footer.ejs') %>
+      </section>
+      <section class="map">
+
+      </section>
+      <section class="achievements">
+        <h2>Achievements</h2>
+        
+      </section>
+      <section class="testimonials">
+        <h2>Testimonials</h2>
+        
+      </section>
+      <% } else { %>
+        <div class="app">
+          <div class="home">
+              <div class="intro-header">
+                  <h2>Welcome to the player dashboard, <%= user.name %></h2>
+              </div>
+          </div>   
+              
+              <div>
+                <a href="/pay-fees">Pay Fees</a>
+            </div>
+              <div>
+                <a href="/logout">Logout</a>
+            </div>
+            
+              
+          </div>
+      </div>
+      <% } %>
+
+<%- include ('./footer.ejs') %>

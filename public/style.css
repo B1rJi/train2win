@@ -112,7 +112,24 @@ footer {
     justify-content: center;
     align-items: center;
   }
-  
+  .signup {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 30px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .formfield {
+    margin: 15px;
+  }
+  .submitbutton {
+    width: 100%;
+    background-color: #009879;
+  }
   .intro-header {
     text-align: center;
   }
